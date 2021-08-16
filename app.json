@@ -1,11 +1,4 @@
 {
-  "expo": {
-    "name": "intelygenz",
-    "slug": "intelygenz",
-    "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ]
-  },
-  "name": "intelygenz"
+  "name": "intelygenz",
+  "displayName": "intelygenz"
 }
