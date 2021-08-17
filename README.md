@@ -1,16 +1,16 @@
 # intelygenz project
 
-To run (needs Android Emulator):
+--- To run (needs Android Emulator) ---
 
 npm start
 
 npm run android
 
-Patterns used:
+--- Patterns ---
 
 State pattern, because it is used by React in order to rerender the pages if the information changes. This is implemented by default by React Native.
 
-Libraries used:
+--- Libraries ---
 
 React Navigation: Required in order to change screens in an easy way.
 
