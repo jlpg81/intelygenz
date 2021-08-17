@@ -1,8 +1,27 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import * as rssParser from 'react-native-rss-parser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import NewsList from '../components/NewsList';
+
+const storeData = async value => {
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem('@storage_Key', jsonValue);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const getData = async () => {
+  try {
+    const jsonValue = await AsyncStorage.getItem('@storage_Key');
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 export default function HomePage() {
   const [articles, setArticles] = useState([]);
@@ -16,9 +35,6 @@ export default function HomePage() {
       .then(response => response.text())
       .then(async responseData => {
         const rss = await rssParser.parse(responseData);
-        // console.log(rss.title);
-        // console.log(rss.items.length);
-        // console.log(rss.items[0]);
         const res = [];
         for (const key in rss.items) {
           if (Object.hasOwnProperty.call(rss.items, key)) {
@@ -26,18 +42,32 @@ export default function HomePage() {
             res.push(element);
           }
         }
+        // save to local storage
+        storeData(res);
         setArticles(res);
       })
-      .catch(e => console.log('problem fetching'));
+      .catch(async e => {
+        //If fetching didnt work, fetch from local storage
+        console.log(e);
+        const savedData = await getData();
+        setArticles(savedData);
+      });
   };
 
   return (
     <View style={styles.HomePageContainer}>
-      <NewsList articles={articles} />
+      <ScrollView>
+        <Text style={styles.title}>Intelygenz RSS</Text>
+        <NewsList articles={articles} />
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   HomePageContainer: {},
+  title: {
+    fontSize: 30,
+    alignSelf: 'center',
+  },
 });
